@@ -19,14 +19,21 @@
 - [x] Visual/demo placeholders for each service
 - [x] CTA: "Schedule Your Free AI Efficiency Demo"
 
-## Store Page Features
-- [x] AI Content Calendar & Prompt Pack ($29-$49)
-- [x] AI Client Reporting Dashboard ($49-$79)
-- [x] AI Lead & Outreach Toolkit ($49-$99)
-- [x] Optional upsell: Custom AI workflow setup ($200-$400)
-- [x] Working PayPal/Stripe/Gumroad buy buttons
+## Store Page Features (Updated with 5 Premium Products)
+- [x] Update store page with 5 new products (replacing current 3)
+- [x] Create "10 AI Workflows for Marketing Agencies" - $19 PDF
+- [x] Create "Agency Automation Blueprint" - $29 Ebook
+- [x] Create "Client Reporting Dashboard Template" - $24
+- [x] Create "AI-Powered Content Calendar" - $17 Template
+- [x] Create "AI Client Onboarding Flow" - $14 Process Map
+- [x] Add product thumbnails and preview images
+- [x] Update pricing to match new structure
+- [x] Working Gumroad buy buttons (placeholders ready)
 - [x] Grid layout with product images/icons
 - [x] Time-saved metrics for each product
+- [x] Add email signup section for product updates
+- [x] Update brand styling (black, silver, white, electric blue)
+- [x] Host downloadable files in /products directory
 
 ## Contact/Demo Page Features
 - [x] Lead capture form or Calendly embed
@@ -34,7 +41,7 @@
 - [x] Clean, easy-to-use design
 
 ## Design & Branding
-- [x] Professional, modern color palette
+- [x] Professional, modern color palette (black, silver, white, electric blue)
 - [x] Consistent typography across all pages
 - [x] Navigation menu linking all pages
 - [x] Mobile-responsive design
@@ -46,20 +53,24 @@
 - [x] Assets folder with images/icons
 - [x] Working navigation between all pages
 - [x] Functional store buy buttons
-- [ ] SEO meta tags (to be added before deployment)
-- [ ] GitHub Pages deployment ready
+- [x] Product PDFs created and hosted
+- [ ] SEO meta tags (to be added)
+- [ ] GitHub deployment
 
 ## Deployment
+- [ ] Update Gumroad/payment links with actual product URLs
+- [ ] Update Calendly link with actual scheduling URL
+- [ ] Add SEO metadata for each product
 - [ ] Push all files to GitHub
 - [ ] Verify live site functionality
 - [ ] Test all navigation links
 - [ ] Test store buy buttons
-- [ ] Test contact form/Calendly embed
+- [ ] Test contact form
 
-## Next Steps
-- [ ] Update Gumroad/payment links with actual product URLs
-- [ ] Update Calendly link with actual scheduling URL
-- [ ] Add SEO meta tags and Open Graph images
-- [ ] Deploy to GitHub Pages
-- [ ] Configure custom domain (www.blackwoodmethod.com)
+## Product Files Created
+- [x] 10-ai-workflows.pdf (296KB)
+- [x] automation-blueprint.pdf (332KB)
+- [x] reporting-dashboard.pdf (345KB)
+- [x] content-calendar.pdf (327KB)
+- [x] onboarding-flow.pdf (356KB)
 

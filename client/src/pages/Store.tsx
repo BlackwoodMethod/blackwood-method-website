@@ -1,172 +1,217 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import Footer from "@/components/Footer";
 import Navigation from "@/components/Navigation";
 import {
-  Calendar,
+  Workflow,
+  BookOpen,
   BarChart3,
-  Mail,
-  Clock,
+  Calendar,
+  GitBranch,
+  Download,
   CheckCircle,
   Star,
   Sparkles,
+  Mail,
 } from "lucide-react";
+import { useState } from "react";
 
 export default function Store() {
+  const [email, setEmail] = useState("");
+  const [emailSubmitted, setEmailSubmitted] = useState(false);
+
+  const handleEmailSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("Email submitted:", email);
+    setEmailSubmitted(true);
+    setTimeout(() => {
+      setEmailSubmitted(false);
+      setEmail("");
+    }, 3000);
+  };
+
   const products = [
     {
-      id: "content-calendar",
-      icon: Calendar,
-      title: "AI Content Calendar & Prompt Pack",
-      price: "$39",
-      originalPrice: "$79",
-      timeSaved: "5-10 hours/week",
+      id: "ai-workflows",
+      icon: Workflow,
+      title: "10 AI Workflows for Marketing Agencies",
+      price: "$19",
       description:
-        "Ready-to-use AI content calendar with 100+ proven prompts for blogs, social media, and email campaigns. Never run out of content ideas again.",
+        "10-page guide showing exactly how agencies use AI for lead scoring, content creation, ad optimization, and client reporting.",
       features: [
-        "30-day content calendar template",
-        "100+ AI prompts for all channels",
-        "Social media posting schedule",
-        "Email campaign templates",
-        "Blog topic generator",
-        "Hashtag research guide",
+        "10 proven AI workflows",
+        "Step-by-step implementation",
+        "Visual workflow diagrams",
+        "Real agency examples",
+        "Downloadable PDF",
       ],
       popular: true,
-      gumroadLink: "https://gumroad.com/l/blackwood-content-calendar", // Replace with actual link
+      gumroadLink: "https://gumroad.com/l/blackwood-ai-workflows",
+      preview: "10 complete workflows with icons and descriptions",
+    },
+    {
+      id: "automation-blueprint",
+      icon: BookOpen,
+      title: "Agency Automation Blueprint",
+      price: "$29",
+      description:
+        "15-page editable guide showing agencies how to integrate AI tools into daily processes. Includes workflow diagrams and AI tips.",
+      features: [
+        "15-page comprehensive guide",
+        "Editable template included",
+        "AI integration strategies",
+        "Workflow diagrams",
+        "Cover, TOC, and CTA sections",
+      ],
+      popular: false,
+      gumroadLink: "https://gumroad.com/l/blackwood-automation-blueprint",
+      preview: "Ebook with cover, TOC, and actionable content",
     },
     {
       id: "reporting-dashboard",
       icon: BarChart3,
-      title: "AI Client Reporting Dashboard",
-      price: "$59",
-      originalPrice: "$99",
-      timeSaved: "Reporting: hours → 15-30 min",
+      title: "Client Reporting Dashboard",
+      price: "$24",
       description:
-        "Editable Notion & Google Sheets templates that auto-generate client reports with AI-assisted summaries. Professional reports in minutes, not hours.",
+        "Professional dashboard template for client KPI reports. Includes logo placement, performance metrics, graphs, and notes sections.",
       features: [
-        "Notion & Google Sheets templates",
-        "AI-powered summary generator",
-        "Customizable KPI dashboards",
-        "Automated data visualization",
-        "Client-ready report templates",
-        "Monthly & quarterly formats",
+        "Visual dashboard layout",
+        "Customizable KPI sections",
+        "Graph placeholders",
+        "Logo and branding areas",
+        "HTML + PDF versions",
       ],
       popular: false,
-      gumroadLink: "https://gumroad.com/l/blackwood-reporting-dashboard", // Replace with actual link
+      gumroadLink: "https://gumroad.com/l/blackwood-reporting-dashboard",
+      preview: "Canva-style template with preview",
     },
     {
-      id: "lead-outreach",
-      icon: Mail,
-      title: "AI Lead & Outreach Toolkit",
-      price: "$69",
-      originalPrice: "$129",
-      timeSaved: "3-5 hours/week",
+      id: "content-calendar",
+      icon: Calendar,
+      title: "AI-Powered Content Calendar",
+      price: "$17",
       description:
-        "Complete toolkit with AI prompts, email templates, and workflow guides to streamline lead research, qualification, and outreach campaigns.",
+        "30-day planner with sections for post types, AI prompt ideas, and scheduling. Formatted for all social platforms.",
       features: [
-        "50+ outreach email templates",
-        "Lead qualification framework",
-        "AI-powered research prompts",
-        "Follow-up sequence builder",
-        "CRM integration guides",
-        "Response rate optimization tips",
+        "30-day content planner",
+        "AI prompt suggestions",
+        "Multi-platform scheduling",
+        "Automation notes included",
+        "Editable spreadsheet PDF",
       ],
       popular: false,
-      gumroadLink: "https://gumroad.com/l/blackwood-lead-toolkit", // Replace with actual link
+      gumroadLink: "https://gumroad.com/l/blackwood-content-calendar",
+      preview: "Monthly calendar with AI prompts",
+    },
+    {
+      id: "onboarding-flow",
+      icon: GitBranch,
+      title: "AI Client Onboarding Flow",
+      price: "$14",
+      description:
+        "Flowchart mapping automated onboarding from lead to client. Includes AI qualification, proposal, payment, and setup steps.",
+      features: [
+        "Complete process flowchart",
+        "Automated qualification steps",
+        "Visual PDF diagram",
+        "Preview image included",
+        "Ready to customize",
+      ],
+      popular: false,
+      gumroadLink: "https://gumroad.com/l/blackwood-onboarding-flow",
+      preview: "Process map from lead to client",
     },
   ];
 
-  const upsell = {
-    icon: Sparkles,
-    title: "Custom AI Workflow Setup",
-    price: "$299",
-    originalPrice: "$499",
-    description:
-      "Get a fully customized AI workflow designed specifically for your agency. We'll analyze your processes, build custom automations, and train your team.",
-    features: [
-      "1-hour workflow analysis call",
-      "Custom automation setup",
-      "Team training session",
-      "30-day support included",
-      "Integration with your tools",
-      "Ongoing optimization tips",
-    ],
-    calendlyLink: "https://calendly.com/blackwoodmethod/custom-setup", // Replace with actual link
-  };
-
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
       <Navigation />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-50 via-white to-blue-50 py-16 md:py-24">
-        <div className="container">
+      <section className="py-16 md:py-24 bg-gradient-to-br from-black via-gray-900 to-gray-800 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_50%)]"></div>
+        <div className="container relative z-10">
           <div className="max-w-3xl mx-auto text-center">
-            <div className="inline-block px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold mb-6">
-              Digital Products for Marketing Agencies
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full text-sm font-semibold mb-6 text-blue-400">
+              <Sparkles className="w-4 h-4" />
+              Premium AI Tools for Agencies
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              AI Tools That{" "}
-              <span className="text-blue-700">Save You Hours</span> Every Week
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+              <span className="bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent">
+                Professional AI Resources
+              </span>
+              <br />
+              <span className="bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
+                Built for Marketing Agencies
+              </span>
             </h1>
-            <p className="text-lg md:text-xl text-gray-600 mb-8">
-              Download instantly and start automating your agency workflows
-              today. All products include lifetime updates and email support.
+            <p className="text-lg md:text-xl text-gray-300 mb-8">
+              Download instantly. Implement immediately. Transform your agency
+              operations with premium AI templates and workflows.
             </p>
+            <div className="flex items-center justify-center gap-8 text-sm text-gray-400">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-blue-400" />
+                <span>Instant Download</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-blue-400" />
+                <span>Lifetime Updates</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-blue-400" />
+                <span>Email Support</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Products Grid */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-black">
         <div className="container">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {products.map((product) => (
               <Card
                 key={product.id}
-                className={`border-2 hover:shadow-xl transition-all relative ${
+                className={`bg-gradient-to-br from-gray-900 to-gray-800 border-2 hover:shadow-2xl hover:shadow-blue-500/20 transition-all relative group ${
                   product.popular
-                    ? "border-blue-700 shadow-lg"
-                    : "border-gray-200 hover:border-blue-700"
+                    ? "border-blue-500 shadow-lg shadow-blue-500/10"
+                    : "border-gray-700 hover:border-blue-500/50"
                 }`}
               >
                 {product.popular && (
-                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                    <Badge className="bg-blue-700 text-white px-4 py-1">
+                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10">
+                    <Badge className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-4 py-1 border-0">
                       <Star className="w-3 h-3 mr-1 inline" />
                       Most Popular
                     </Badge>
                   </div>
                 )}
                 <CardHeader className="pb-4">
-                  <div className="w-14 h-14 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                    <product.icon className="w-7 h-7 text-blue-700" />
+                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <product.icon className="w-8 h-8 text-white" />
                   </div>
-                  <CardTitle className="text-xl mb-2">
+                  <CardTitle className="text-xl mb-2 text-white">
                     {product.title}
                   </CardTitle>
                   <div className="flex items-baseline gap-2">
-                    <span className="text-3xl font-bold text-gray-900">
+                    <span className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
                       {product.price}
                     </span>
-                    <span className="text-lg text-gray-400 line-through">
-                      {product.originalPrice}
-                    </span>
                   </div>
-                  <div className="flex items-center gap-2 mt-2 text-sm text-green-700 bg-green-50 px-3 py-1 rounded-full w-fit">
-                    <Clock className="w-4 h-4" />
-                    <span className="font-medium">{product.timeSaved}</span>
-                  </div>
+                  <p className="text-sm text-gray-400 mt-2">{product.preview}</p>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-600 mb-6">{product.description}</p>
+                  <p className="text-gray-300 mb-6">{product.description}</p>
 
                   <div className="space-y-2 mb-6">
                     {product.features.map((feature, idx) => (
                       <div key={idx} className="flex items-start gap-2">
-                        <CheckCircle className="w-4 h-4 text-blue-700 flex-shrink-0 mt-0.5" />
-                        <span className="text-sm text-gray-700">{feature}</span>
+                        <CheckCircle className="w-4 h-4 text-blue-400 flex-shrink-0 mt-0.5" />
+                        <span className="text-sm text-gray-300">{feature}</span>
                       </div>
                     ))}
                   </div>
@@ -178,82 +223,81 @@ export default function Store() {
                     className="block"
                   >
                     <Button
-                      className={`w-full ${
+                      className={`w-full group-hover:scale-105 transition-transform ${
                         product.popular
-                          ? "bg-blue-700 hover:bg-blue-800"
-                          : "bg-gray-900 hover:bg-gray-800"
+                          ? "bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-600"
+                          : "bg-gradient-to-r from-gray-700 to-gray-600 hover:from-blue-600 hover:to-blue-500"
                       }`}
                       size="lg"
                     >
-                      Buy Now & Download
+                      <Download className="w-4 h-4 mr-2" />
+                      Buy & Download Now
                     </Button>
                   </a>
                   <p className="text-xs text-gray-500 text-center mt-2">
-                    Instant access • Lifetime updates
+                    Instant access • Lifetime updates • Email support
                   </p>
                 </CardContent>
               </Card>
             ))}
           </div>
+        </div>
+      </section>
 
-          {/* Upsell Section */}
-          <div className="max-w-4xl mx-auto">
-            <Card className="border-2 border-blue-700 bg-gradient-to-br from-blue-50 to-white shadow-xl">
-              <CardHeader>
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-16 h-16 bg-blue-700 rounded-lg flex items-center justify-center">
-                    <upsell.icon className="w-8 h-8 text-white" />
-                  </div>
-                  <div>
-                    <Badge className="bg-blue-700 text-white mb-2">
-                      Premium Service
-                    </Badge>
-                    <CardTitle className="text-2xl md:text-3xl">
-                      {upsell.title}
-                    </CardTitle>
-                  </div>
+      {/* Email Signup Section */}
+      <section className="py-16 bg-gradient-to-br from-gray-900 to-black">
+        <div className="container">
+          <div className="max-w-2xl mx-auto">
+            <Card className="bg-gradient-to-br from-blue-600 to-blue-700 border-0 shadow-2xl shadow-blue-500/20">
+              <CardContent className="p-8 md:p-12 text-center">
+                <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Mail className="w-8 h-8 text-white" />
                 </div>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-bold text-gray-900">
-                    {upsell.price}
-                  </span>
-                  <span className="text-xl text-gray-400 line-through">
-                    {upsell.originalPrice}
-                  </span>
-                  <Badge variant="secondary" className="ml-2">
-                    Limited Spots
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-lg text-gray-700 mb-6">
-                  {upsell.description}
+                <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                  Get Product Updates
+                </h2>
+                <p className="text-blue-100 text-lg mb-8">
+                  Be the first to know when we release new AI tools and
+                  templates. Plus, get exclusive discounts.
                 </p>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8">
-                  {upsell.features.map((feature, idx) => (
-                    <div key={idx} className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-blue-700 flex-shrink-0 mt-0.5" />
-                      <span className="text-gray-700">{feature}</span>
+                {emailSubmitted ? (
+                  <div className="py-4">
+                    <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <CheckCircle className="w-8 h-8 text-green-300" />
                     </div>
-                  ))}
-                </div>
-
-                <a
-                  href={upsell.calendlyLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block"
-                >
-                  <Button
-                    className="w-full bg-blue-700 hover:bg-blue-800"
-                    size="lg"
+                    <p className="text-white font-semibold text-lg">
+                      You're subscribed!
+                    </p>
+                    <p className="text-blue-100 text-sm mt-2">
+                      Check your email for confirmation.
+                    </p>
+                  </div>
+                ) : (
+                  <form
+                    onSubmit={handleEmailSubmit}
+                    className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
                   >
-                    Schedule Setup Call
-                  </Button>
-                </a>
-                <p className="text-sm text-gray-600 text-center mt-3">
-                  Only 5 spots available this month
+                    <Input
+                      type="email"
+                      placeholder="your@email.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      className="flex-1 bg-white/10 border-white/20 text-white placeholder:text-blue-200 focus:border-white"
+                    />
+                    <Button
+                      type="submit"
+                      size="lg"
+                      className="bg-white text-blue-600 hover:bg-gray-100 font-semibold"
+                    >
+                      Subscribe
+                    </Button>
+                  </form>
+                )}
+
+                <p className="text-xs text-blue-200 mt-4">
+                  No spam. Unsubscribe anytime.
                 </p>
               </CardContent>
             </Card>
@@ -262,30 +306,30 @@ export default function Store() {
       </section>
 
       {/* Trust Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-black border-t border-gray-800">
         <div className="container">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
-              Why Agencies Trust Our Products
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-2xl md:text-3xl font-bold text-center mb-12 text-white">
+              Why Agencies Choose Blackwood Method
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div>
-                <div className="text-4xl font-bold text-blue-700 mb-2">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+              <div className="p-6 bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg border border-gray-700">
+                <div className="text-5xl font-bold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent mb-2">
                   500+
                 </div>
-                <p className="text-gray-600">Agencies Served</p>
+                <p className="text-gray-300">Agencies Served</p>
               </div>
-              <div>
-                <div className="text-4xl font-bold text-blue-700 mb-2">
+              <div className="p-6 bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg border border-gray-700">
+                <div className="text-5xl font-bold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent mb-2">
                   4.9/5
                 </div>
-                <p className="text-gray-600">Average Rating</p>
+                <p className="text-gray-300">Average Rating</p>
               </div>
-              <div>
-                <div className="text-4xl font-bold text-blue-700 mb-2">
+              <div className="p-6 bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg border border-gray-700">
+                <div className="text-5xl font-bold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent mb-2">
                   24/7
                 </div>
-                <p className="text-gray-600">Email Support</p>
+                <p className="text-gray-300">Email Support</p>
               </div>
             </div>
           </div>
@@ -293,20 +337,19 @@ export default function Store() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-blue-700">
+      <section className="py-20 bg-gradient-to-r from-blue-600 to-blue-700">
         <div className="container text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-            Not Sure Which Product Is Right for You?
+            Need Help Choosing?
           </h2>
           <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Schedule a free consultation and we'll help you choose the best
-            tools for your agency's specific needs.
+            Schedule a free consultation and we'll recommend the best products
+            for your agency's specific needs.
           </p>
           <a href="/contact">
             <Button
               size="lg"
-              variant="secondary"
-              className="text-lg px-8 bg-white text-blue-700 hover:bg-gray-100"
+              className="text-lg px-8 bg-white text-blue-600 hover:bg-gray-100 font-semibold"
             >
               Get Free Consultation
             </Button>
