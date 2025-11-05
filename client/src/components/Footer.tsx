@@ -65,6 +65,9 @@ export default function Footer() {
           <p>
             © {currentYear} Blackwood Method. All rights reserved.
           </p>
+          <p className="mt-2 text-gray-600">
+            Built by Jaden Varner — empowering agencies to evolve beyond bottlenecks.
+          </p>
         </div>
       </div>
     </footer>

@@ -6,9 +6,13 @@ import { Textarea } from "@/components/ui/textarea";
 import Footer from "@/components/Footer";
 import Navigation from "@/components/Navigation";
 import { Calendar, Mail, MessageSquare, CheckCircle } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { updatePageSEO } from "@/lib/seo";
 
 export default function Contact() {
+  useEffect(() => {
+    updatePageSEO("contact");
+  }, []);
   const [formData, setFormData] = useState({
     name: "",
     email: "",

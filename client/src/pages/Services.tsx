@@ -11,8 +11,13 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { Link } from "wouter";
+import { useEffect } from "react";
+import { updatePageSEO } from "@/lib/seo";
 
 export default function Services() {
+  useEffect(() => {
+    updatePageSEO("services");
+  }, []);
   const services = [
     {
       icon: Zap,

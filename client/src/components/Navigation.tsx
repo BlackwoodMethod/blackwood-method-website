@@ -11,6 +11,7 @@ export default function Navigation() {
     { href: "/", label: "Home" },
     { href: "/services", label: "Services" },
     { href: "/store", label: "Store" },
+    { href: "/demo", label: "Demo" },
     { href: "/contact", label: "Contact" },
   ];
 

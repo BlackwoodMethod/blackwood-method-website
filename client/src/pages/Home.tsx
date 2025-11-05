@@ -11,8 +11,13 @@ import {
   Users,
 } from "lucide-react";
 import { Link } from "wouter";
+import { useEffect } from "react";
+import { updatePageSEO } from "@/lib/seo";
 
 export default function Home() {
+  useEffect(() => {
+    updatePageSEO("home");
+  }, []);
   const benefits = [
     {
       icon: Clock,
@@ -127,6 +132,28 @@ export default function Home() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Blackwood Section */}
+      <section className="py-16 bg-gradient-to-br from-gray-900 to-black border-y border-gray-800">
+        <div className="container">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+              Why Blackwood Method?
+            </h2>
+            <p className="text-lg md:text-xl text-gray-300 leading-relaxed mb-8">
+              Blackwood Method was built to redefine how digital marketing agencies use AI — practical systems that save time, enhance client results, and scale human creativity.
+            </p>
+            <p className="text-gray-400 mb-8">
+              We're not about hype or buzzwords. We build tools and workflows that actually work in the day-to-day chaos of agency life. From automating client reports to streamlining content creation, every solution is designed by marketers, for marketers.
+            </p>
+            <Link href="/store">
+              <Button size="lg" className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-600">
+                See How AI Can Enhance Your Agency →
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
