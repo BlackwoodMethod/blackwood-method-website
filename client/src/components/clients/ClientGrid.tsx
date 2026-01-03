@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "wouter";
 import { supabase } from "@/lib/supabaseClient";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -70,9 +71,11 @@ export function ClientGrid({ refreshTrigger }: ClientGridProps) {
         <Card key={client.id} className="bg-slate-900 border-slate-800 text-slate-200 hover:border-slate-700 transition-colors">
           <CardHeader className="pb-2">
             <div className="flex justify-between items-start">
-              <CardTitle className="text-lg font-bold text-white truncate pr-2">
-                {client.company_name}
-              </CardTitle>
+              <Link href={`/client/${client.id}`} className="flex-1 min-w-0">
+                <CardTitle className="text-lg font-bold text-white truncate pr-2 hover:text-blue-400 transition-colors cursor-pointer">
+                  {client.company_name}
+                </CardTitle>
+              </Link>
               <Badge variant="outline" className="bg-green-950/30 text-green-400 border-green-900">
                 Active
               </Badge>
@@ -94,9 +97,11 @@ export function ClientGrid({ refreshTrigger }: ClientGridProps) {
             )}
           </CardContent>
           <CardFooter className="pt-2 border-t border-slate-800/50">
-            <Button variant="ghost" size="sm" className="w-full text-slate-400 hover:text-white hover:bg-slate-800">
-              Manage Workflows
-            </Button>
+            <Link href={`/client/${client.id}`} className="w-full">
+              <Button variant="ghost" size="sm" className="w-full text-slate-400 hover:text-white hover:bg-slate-800">
+                View Details
+              </Button>
+            </Link>
           </CardFooter>
         </Card>
       ))}

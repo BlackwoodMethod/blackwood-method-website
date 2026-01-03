@@ -11,6 +11,7 @@ import Contact from "./pages/Contact";
 import Demo from "./pages/Demo";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import ClientDetails from "./pages/ClientDetails";
 
 function Router() {
   return (
@@ -22,6 +23,7 @@ function Router() {
       <Route path="/demo" component={Demo} />
       <Route path="/login" component={Login} />
       <Route path="/dashboard" component={Dashboard} />
+      <Route path="/client/:id" component={ClientDetails} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
