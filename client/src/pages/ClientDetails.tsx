@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { useRoute, Link } from "wouter";
 import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ExternalLink, FileText, Plus } from "lucide-react";
+import { ArrowLeft, ExternalLink, FileText, Plus, Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 
 interface Client {
   id: string;
@@ -14,35 +15,105 @@ interface Client {
   created_at: string;
 }
 
+interface Report {
+  id: string;
+  title: string;
+  content: string;
+  created_at: string;
+}
+
 export default function ClientDetails() {
   const [, params] = useRoute("/client/:id");
   const id = params?.id;
   
   const [client, setClient] = useState<Client | null>(null);
+  const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
+  const [generating, setGenerating] = useState(false);
 
   useEffect(() => {
     if (!id) return;
 
-    const fetchClient = async () => {
+    const fetchData = async () => {
       try {
-        const { data, error } = await supabase
+        // Fetch client
+        const { data: clientData, error: clientError } = await supabase
           .from('clients')
           .select('*')
           .eq('id', id)
           .single();
 
-        if (error) throw error;
-        setClient(data);
+        if (clientError) throw clientError;
+        setClient(clientData);
+
+        // Fetch reports
+        const { data: reportsData, error: reportsError } = await supabase
+          .from('reports')
+          .select('*')
+          .eq('client_id', id)
+          .order('created_at', { ascending: false });
+
+        if (reportsError && reportsError.code !== '42P01') { // Ignore if table doesn't exist yet
+          console.error("Error fetching reports:", reportsError);
+        }
+        
+        setReports(reportsData || []);
+
       } catch (error) {
-        console.error("Error fetching client:", error);
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchClient();
+    fetchData();
   }, [id]);
+
+  const handleGenerateReport = async () => {
+    if (!client) return;
+    
+    setGenerating(true);
+    toast.info("Analyzing client data with AI...");
+
+    try {
+      // 1. Call Edge Function
+      const { data, error } = await supabase.functions.invoke('generate-report', {
+        body: { 
+          client_name: client.company_name, 
+          website_url: client.website_url 
+        }
+      });
+
+      if (error) throw error;
+
+      const resultJson = data.result;
+      
+      // 2. Save to Supabase
+      const { data: savedReport, error: saveError } = await supabase
+        .from('reports')
+        .insert([
+          {
+            client_id: client.id,
+            title: `AI Strategy Analysis - ${new Date().toLocaleDateString()}`,
+            content: typeof resultJson === 'string' ? resultJson : JSON.stringify(resultJson, null, 2)
+          }
+        ])
+        .select()
+        .single();
+
+      if (saveError) throw saveError;
+
+      // 3. Update UI
+      setReports([savedReport, ...reports]);
+      toast.success("Report generated successfully!");
+
+    } catch (error: any) {
+      console.error("Generation error:", error);
+      toast.error("Failed to generate report. Check console for details.");
+    } finally {
+      setGenerating(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -110,27 +181,62 @@ export default function ClientDetails() {
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold text-white">Reports</h2>
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-              <Plus className="mr-2 h-4 w-4" />
-              Generate New Report
+            <Button 
+              onClick={handleGenerateReport} 
+              disabled={generating}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
+              {generating ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Analyzing...
+                </>
+              ) : (
+                <>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Generate New Report
+                </>
+              )}
             </Button>
           </div>
 
-          {/* Empty State for Reports */}
-          <Card className="bg-slate-950 border-slate-800 border-dashed">
-            <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-              <div className="h-12 w-12 rounded-full bg-slate-900 flex items-center justify-center mb-4">
-                <FileText className="h-6 w-6 text-slate-500" />
-              </div>
-              <h3 className="text-lg font-medium text-white mb-1">No reports generated yet</h3>
-              <p className="text-slate-400 max-w-sm mb-4">
-                Generate your first AI-powered report for {client.company_name} to see insights.
-              </p>
-              <Button variant="secondary" className="bg-slate-800 text-white hover:bg-slate-700">
-                Create First Report
-              </Button>
-            </CardContent>
-          </Card>
+          {reports.length === 0 ? (
+            <Card className="bg-slate-950 border-slate-800 border-dashed">
+              <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+                <div className="h-12 w-12 rounded-full bg-slate-900 flex items-center justify-center mb-4">
+                  <FileText className="h-6 w-6 text-slate-500" />
+                </div>
+                <h3 className="text-lg font-medium text-white mb-1">No reports generated yet</h3>
+                <p className="text-slate-400 max-w-sm mb-4">
+                  Generate your first AI-powered report for {client.company_name} to see insights.
+                </p>
+                <Button 
+                  variant="secondary" 
+                  className="bg-slate-800 text-white hover:bg-slate-700"
+                  onClick={handleGenerateReport}
+                  disabled={generating}
+                >
+                  Create First Report
+                </Button>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid gap-6">
+              {reports.map((report) => (
+                <Card key={report.id} className="bg-slate-900 border-slate-800 text-slate-200">
+                  <CardHeader>
+                    <CardTitle className="text-lg font-bold text-white">{report.title}</CardTitle>
+                    <p className="text-xs text-slate-500">Generated on {new Date(report.created_at).toLocaleDateString()}</p>
+                  </CardHeader>
+                  <CardContent>
+                    <pre className="bg-slate-950 p-4 rounded-lg overflow-auto text-sm text-slate-300 font-mono whitespace-pre-wrap max-h-96">
+                      {report.content}
+                    </pre>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
