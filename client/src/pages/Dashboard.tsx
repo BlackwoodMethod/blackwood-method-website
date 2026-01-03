@@ -7,17 +7,19 @@ import {
   Users, 
   Settings, 
   LogOut, 
-  Menu,
-  X
+  Menu
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { toast } from "sonner";
+import { AddClientDialog } from "@/components/clients/AddClientDialog";
+import { ClientGrid } from "@/components/clients/ClientGrid";
 
 export default function Dashboard() {
   const [, setLocation] = useLocation();
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState<any>(null);
   const [agencyName, setAgencyName] = useState<string>("Agency Partner");
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -55,6 +57,10 @@ export default function Dashboard() {
     await supabase.auth.signOut();
     setLocation("/login");
     toast.success("Signed out successfully");
+  };
+
+  const handleClientAdded = () => {
+    setRefreshTrigger(prev => prev + 1);
   };
 
   if (loading) {
@@ -144,36 +150,15 @@ export default function Dashboard() {
         {/* Page Content */}
         <main className="flex-1 p-6 md:p-8 overflow-auto">
           <div className="max-w-6xl mx-auto">
-            <div className="mb-8">
-              <h1 className="text-3xl font-bold text-white mb-2">Welcome, {agencyName}</h1>
-              <p className="text-slate-400">Here's what's happening with your agency today.</p>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+              <div>
+                <h1 className="text-3xl font-bold text-white mb-2">My Clients</h1>
+                <p className="text-slate-400">Manage your agency clients and their automation workflows.</p>
+              </div>
+              <AddClientDialog onClientAdded={handleClientAdded} />
             </div>
 
-            {/* Placeholder Content */}
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              <div className="p-6 rounded-xl bg-slate-900 border border-slate-800">
-                <h3 className="text-slate-400 text-sm font-medium mb-2">Total Clients</h3>
-                <p className="text-3xl font-bold text-white">0</p>
-              </div>
-              <div className="p-6 rounded-xl bg-slate-900 border border-slate-800">
-                <h3 className="text-slate-400 text-sm font-medium mb-2">Active Automations</h3>
-                <p className="text-3xl font-bold text-white">0</p>
-              </div>
-              <div className="p-6 rounded-xl bg-slate-900 border border-slate-800">
-                <h3 className="text-slate-400 text-sm font-medium mb-2">Hours Saved</h3>
-                <p className="text-3xl font-bold text-white">0h</p>
-              </div>
-            </div>
-            
-            <div className="mt-8 p-8 rounded-xl border border-dashed border-slate-800 flex flex-col items-center justify-center text-center">
-              <div className="h-12 w-12 rounded-full bg-slate-900 flex items-center justify-center mb-4">
-                <LayoutDashboard className="h-6 w-6 text-slate-500" />
-              </div>
-              <h3 className="text-lg font-medium text-white mb-1">Dashboard Ready</h3>
-              <p className="text-slate-400 max-w-md">
-                Your agency dashboard shell is set up. Connect your data sources to start seeing real metrics here.
-              </p>
-            </div>
+            <ClientGrid refreshTrigger={refreshTrigger} />
           </div>
         </main>
       </div>
