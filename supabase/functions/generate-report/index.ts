@@ -19,15 +19,18 @@ serve(async (req) => {
       throw new Error('GEMINI_API_KEY is not set')
     }
 
+    // Use Gemini 3 Flash model (2026 stable)
+    const model = 'gemini-3-flash';
+    
     const prompt = `You are a senior marketing strategist. Analyze the following client based on their name and website. Output a JSON summary of 3 key marketing opportunities.
     
     Client Name: ${client_name}
     Website: ${website_url}
     
-    Format the response as a valid JSON object with a "opportunities" array, where each object has "title" and "description".`
+    Format the response as a valid JSON object with a "opportunities" array, where each object has "title" and "description". Do not include markdown formatting like \`\`\`json.`;
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`,
       {
         method: 'POST',
         headers: {
@@ -41,16 +44,33 @@ serve(async (req) => {
       }
     )
 
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Gemini API Error: ${response.status} - ${errorText}`);
+    }
+
     const data = await response.json()
     
     // Extract the text from Gemini's response structure
-    const generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text || "{}"
+    let generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text || "{}"
     
-    // Clean up markdown code blocks if present
-    const jsonString = generatedText.replace(/```json\n|\n```/g, "").trim()
+    // Clean up markdown code blocks if present (just in case)
+    generatedText = generatedText.replace(/```json\n|\n```/g, "").replace(/```/g, "").trim()
+
+    let resultJson;
+    try {
+      resultJson = JSON.parse(generatedText);
+    } catch (e) {
+      // Fallback if JSON parsing fails
+      resultJson = { 
+        error: "Failed to parse AI response", 
+        raw_text: generatedText,
+        opportunities: [] 
+      };
+    }
 
     return new Response(
-      JSON.stringify({ result: jsonString }),
+      JSON.stringify({ result: resultJson }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200 

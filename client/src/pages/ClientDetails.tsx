@@ -18,7 +18,7 @@ interface Client {
 interface Report {
   id: string;
   title: string;
-  content: string;
+  content: any; // Changed to any to handle JSONB
   created_at: string;
 }
 
@@ -76,26 +76,44 @@ export default function ClientDetails() {
     toast.info("Analyzing client data with AI...");
 
     try {
-      // 1. Call Edge Function
-      const { data, error } = await supabase.functions.invoke('generate-report', {
-        body: { 
-          client_name: client.company_name, 
-          website_url: client.website_url 
+      // Manual Fetch to avoid SDK header stripping issues with new Auth
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      
+      if (!token) throw new Error("No active session");
+
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-report`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+            'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
+          },
+          body: JSON.stringify({ 
+            client_name: client.company_name, 
+            website_url: client.website_url 
+          })
         }
-      });
+      );
 
-      if (error) throw error;
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Function Error: ${response.status} - ${errorText}`);
+      }
 
+      const data = await response.json();
       const resultJson = data.result;
       
-      // 2. Save to Supabase
+      // 2. Save to Supabase (content is now JSONB)
       const { data: savedReport, error: saveError } = await supabase
         .from('reports')
         .insert([
           {
             client_id: client.id,
             title: `AI Strategy Analysis - ${new Date().toLocaleDateString()}`,
-            content: typeof resultJson === 'string' ? resultJson : JSON.stringify(resultJson, null, 2)
+            content: resultJson // Passing object directly for JSONB
           }
         ])
         .select()
@@ -109,7 +127,7 @@ export default function ClientDetails() {
 
     } catch (error: any) {
       console.error("Generation error:", error);
-      toast.error("Failed to generate report. Check console for details.");
+      toast.error(`Failed to generate report: ${error.message}`);
     } finally {
       setGenerating(false);
     }
@@ -229,9 +247,21 @@ export default function ClientDetails() {
                     <p className="text-xs text-slate-500">Generated on {new Date(report.created_at).toLocaleDateString()}</p>
                   </CardHeader>
                   <CardContent>
-                    <pre className="bg-slate-950 p-4 rounded-lg overflow-auto text-sm text-slate-300 font-mono whitespace-pre-wrap max-h-96">
-                      {report.content}
-                    </pre>
+                    {/* Render JSON content nicely */}
+                    {report.content && report.content.opportunities ? (
+                      <div className="space-y-4">
+                        {report.content.opportunities.map((opp: any, idx: number) => (
+                          <div key={idx} className="p-4 bg-slate-950 rounded border border-slate-800">
+                            <h4 className="font-bold text-blue-400 mb-1">{opp.title}</h4>
+                            <p className="text-sm text-slate-300">{opp.description}</p>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <pre className="bg-slate-950 p-4 rounded-lg overflow-auto text-sm text-slate-300 font-mono whitespace-pre-wrap max-h-96">
+                        {JSON.stringify(report.content, null, 2)}
+                      </pre>
+                    )}
                   </CardContent>
                 </Card>
               ))}
