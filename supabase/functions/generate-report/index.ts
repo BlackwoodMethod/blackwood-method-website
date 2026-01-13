@@ -19,8 +19,8 @@ serve(async (req) => {
       throw new Error('GEMINI_API_KEY is not set')
     }
 
-    // Use Gemini 3 Flash model (2026 stable)
-    const model = 'gemini-3-flash';
+    // Reverting to gemini-1.5-flash for stability
+    const model = 'gemini-1.5-flash';
     
     const prompt = `You are a senior marketing strategist. Analyze the following client based on their name and website. Output a JSON summary of 3 key marketing opportunities.
     
@@ -54,7 +54,7 @@ serve(async (req) => {
     // Extract the text from Gemini's response structure
     let generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text || "{}"
     
-    // Clean up markdown code blocks if present (just in case)
+    // Clean up markdown code blocks if present
     generatedText = generatedText.replace(/```json\n|\n```/g, "").replace(/```/g, "").trim()
 
     let resultJson;
