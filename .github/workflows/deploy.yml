@@ -33,11 +33,17 @@ jobs:
         run: npm run build
         env:
           VITE_APP_TITLE: "Blackwood Method"
+          # Inject dummy values for analytics to prevent build placeholders from breaking the app
+          VITE_ANALYTICS_ENDPOINT: ""
+          VITE_ANALYTICS_WEBSITE_ID: ""
+          # Add other necessary env vars here if needed
 
       - name: Move Build Output
         run: |
           mkdir -p _site
           cp -r dist/public/* _site/
+          # Create CNAME file for custom domain
+          echo "blackwoodmethod.com" > _site/CNAME
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
