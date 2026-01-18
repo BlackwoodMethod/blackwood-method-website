@@ -1,11 +1,29 @@
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
-import { useState } from "react";
+import { Menu, X, LayoutDashboard } from "lucide-react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
+import { supabase } from "@/lib/supabaseClient";
 
 export default function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [location] = useLocation();
+  const [session, setSession] = useState<any>(null);
+
+  useEffect(() => {
+    // Check active session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const navLinks = [
     { href: "/", label: "Home" },
@@ -41,11 +59,22 @@ export default function Navigation() {
                 </span>
               </Link>
             ))}
-            <Link href="/signin">
-              <Button variant="ghost" size="sm" className="text-gray-700 hover:text-blue-700 hover:bg-blue-50">
-                Sign In
-              </Button>
-            </Link>
+            
+            {session ? (
+              <Link href="/dashboard">
+                <Button variant="outline" size="sm" className="text-blue-700 border-blue-200 hover:bg-blue-50">
+                  <LayoutDashboard className="w-4 h-4 mr-2" />
+                  Dashboard
+                </Button>
+              </Link>
+            ) : (
+              <Link href="/signin">
+                <Button variant="ghost" size="sm" className="text-gray-700 hover:text-blue-700 hover:bg-blue-50">
+                  Sign In
+                </Button>
+              </Link>
+            )}
+            
             <Link href="/contact">
               <Button size="sm" className="bg-blue-700 hover:bg-blue-800">
                 Get Started
@@ -81,16 +110,32 @@ export default function Navigation() {
                   </span>
                 </Link>
               ))}
-              <Link href="/signin">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="w-full text-gray-700 hover:text-blue-700 hover:bg-blue-50 mb-2"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Sign In
-                </Button>
-              </Link>
+              
+              {session ? (
+                <Link href="/dashboard">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full text-blue-700 border-blue-200 hover:bg-blue-50 mb-2"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <LayoutDashboard className="w-4 h-4 mr-2" />
+                    Dashboard
+                  </Button>
+                </Link>
+              ) : (
+                <Link href="/signin">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-full text-gray-700 hover:text-blue-700 hover:bg-blue-50 mb-2"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Sign In
+                  </Button>
+                </Link>
+              )}
+              
               <Link href="/contact">
                 <Button
                   size="sm"
@@ -107,4 +152,3 @@ export default function Navigation() {
     </nav>
   );
 }
-
