@@ -20,6 +20,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [, setLocation] = useLocation();
   const [loading, setLoading] = useState(true);
   const [agencyName, setAgencyName] = useState<string>("Agency Partner");
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -34,12 +35,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         // Fetch profile data
         const { data: profile } = await supabase
           .from('profiles')
-          .select('agency_name')
+          .select('agency_name, avatar_url')
           .eq('id', session.user.id)
           .single();
           
-        if (profile && profile.agency_name) {
-          setAgencyName(profile.agency_name);
+        if (profile) {
+          if (profile.agency_name) setAgencyName(profile.agency_name);
+          if (profile.avatar_url) setAvatarUrl(profile.avatar_url);
         }
       } catch (error) {
         console.error("Error checking session:", error);
@@ -135,8 +137,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             <div className="text-sm text-slate-400">
               Welcome, <span className="text-white font-medium">{agencyName}</span>
             </div>
-            <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-xs">
-              {agencyName.charAt(0).toUpperCase()}
+            <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-xs overflow-hidden">
+              {avatarUrl ? (
+                <img src={avatarUrl} alt={agencyName} className="h-full w-full object-cover" />
+              ) : (
+                agencyName.charAt(0).toUpperCase()
+              )}
             </div>
           </div>
         </header>
