@@ -33,10 +33,16 @@ jobs:
         run: npm run build
         env:
           VITE_APP_TITLE: "Blackwood Method"
-          # Inject dummy values for analytics to prevent build placeholders from breaking the app
-          VITE_ANALYTICS_ENDPOINT: ""
-          VITE_ANALYTICS_WEBSITE_ID: ""
-          # Add other necessary env vars here if needed
+          VITE_APP_ID: "YHKC22aTBZYKYVY4htDXjg"
+          VITE_APP_LOGO: "https://files.manuscdn.com/user_upload_by_module/web_dev_logo/310519663154077196/QALxPYTlwJSdogxY.png"
+          VITE_ANALYTICS_ENDPOINT: "https://manus-analytics.com"
+          VITE_ANALYTICS_WEBSITE_ID: "35d0b256-a2dd-4b04-bb3f-a4bac2076d79"
+          VITE_OAUTH_PORTAL_URL: "https://manus.im"
+          VITE_FRONTEND_FORGE_API_URL: "https://forge.manus.ai"
+          VITE_FRONTEND_FORGE_API_KEY: "7CsoJN5EkZiedFJV3CPMD3"
+          # Supabase Secrets - Must be configured in GitHub Repo Settings > Secrets and variables > Actions
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
 
       - name: Move Build Output
         run: |
