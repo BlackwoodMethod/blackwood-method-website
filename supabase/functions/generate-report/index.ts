@@ -6,7 +6,6 @@ const corsHeaders = {
 }
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
@@ -19,27 +18,32 @@ serve(async (req) => {
       throw new Error('GEMINI_API_KEY is not set')
     }
 
-    // Reverting to gemini-1.5-flash for stability
     const model = 'gemini-1.5-flash';
     
-    const prompt = `You are a senior marketing strategist. Analyze the following client based on their name and website. Output a JSON summary of 3 key marketing opportunities.
+    // Updated Prompt for "AI Readiness Score" format
+    const prompt = `You are a senior marketing strategist for Blackwood Method. Your job is to analyze agency websites and identify key opportunities for automation or AI implementation.
     
-    Client Name: ${client_name}
+    Client: ${client_name}
     Website: ${website_url}
     
-    Format the response as a valid JSON object with a "opportunities" array, where each object has "title" and "description". Do not include markdown formatting like \`\`\`json.`;
+    Output the result as a valid JSON object with the following structure:
+    {
+      "client": "${client_name}",
+      "website": "${website_url}",
+      "ai_readiness_score": (integer between 0-100),
+      "summary": (string, professional analysis of their current state),
+      "recommendations": (array of strings, specific actionable steps)
+    }
+    
+    Do not include markdown formatting like \`\`\`json. Just the raw JSON.`;
 
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`,
       {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          contents: [{
-            parts: [{ text: prompt }]
-          }]
+          contents: [{ parts: [{ text: prompt }] }]
         })
       }
     )
@@ -50,22 +54,19 @@ serve(async (req) => {
     }
 
     const data = await response.json()
-    
-    // Extract the text from Gemini's response structure
     let generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text || "{}"
-    
-    // Clean up markdown code blocks if present
     generatedText = generatedText.replace(/```json\n|\n```/g, "").replace(/```/g, "").trim()
 
     let resultJson;
     try {
       resultJson = JSON.parse(generatedText);
     } catch (e) {
-      // Fallback if JSON parsing fails
       resultJson = { 
         error: "Failed to parse AI response", 
         raw_text: generatedText,
-        opportunities: [] 
+        ai_readiness_score: 0,
+        summary: "Could not parse analysis.",
+        recommendations: [] 
       };
     }
 

@@ -240,31 +240,67 @@ export default function ClientDetails() {
             </Card>
           ) : (
             <div className="grid gap-6">
-              {reports.map((report) => (
-                <Card key={report.id} className="bg-slate-900 border-slate-800 text-slate-200">
-                  <CardHeader>
-                    <CardTitle className="text-lg font-bold text-white">{report.title}</CardTitle>
-                    <p className="text-xs text-slate-500">Generated on {new Date(report.created_at).toLocaleDateString()}</p>
-                  </CardHeader>
-                  <CardContent>
-                    {/* Render JSON content nicely */}
-                    {report.content && report.content.opportunities ? (
-                      <div className="space-y-4">
-                        {report.content.opportunities.map((opp: any, idx: number) => (
-                          <div key={idx} className="p-4 bg-slate-950 rounded border border-slate-800">
-                            <h4 className="font-bold text-blue-400 mb-1">{opp.title}</h4>
-                            <p className="text-sm text-slate-300">{opp.description}</p>
-                          </div>
-                        ))}
+              {reports.map((report) => {
+                const data = report.content;
+                // Check if it's the new format (with ai_readiness_score)
+                const isNewFormat = data && typeof data.ai_readiness_score !== 'undefined';
+
+                return (
+                  <Card key={report.id} className="bg-slate-900 border-slate-800 text-slate-200">
+                    <CardHeader className="flex flex-row items-center justify-between">
+                      <div>
+                        <CardTitle className="text-lg font-bold text-white">{report.title}</CardTitle>
+                        <p className="text-xs text-slate-500">Generated on {new Date(report.created_at).toLocaleDateString()}</p>
                       </div>
-                    ) : (
-                      <pre className="bg-slate-950 p-4 rounded-lg overflow-auto text-sm text-slate-300 font-mono whitespace-pre-wrap max-h-96">
-                        {JSON.stringify(report.content, null, 2)}
-                      </pre>
-                    )}
-                  </CardContent>
-                </Card>
-              ))}
+                      {isNewFormat && (
+                        <div className="flex flex-col items-end">
+                          <span className="text-xs text-slate-400 uppercase tracking-wider">AI Readiness</span>
+                          <span className={`text-2xl font-bold ${data.ai_readiness_score > 70 ? 'text-green-400' : data.ai_readiness_score > 40 ? 'text-yellow-400' : 'text-red-400'}`}>
+                            {data.ai_readiness_score}/100
+                          </span>
+                        </div>
+                      )}
+                    </CardHeader>
+                    <CardContent>
+                      {isNewFormat ? (
+                        <div className="space-y-6">
+                          <div className="bg-slate-950 p-4 rounded-md border border-slate-800">
+                            <p className="text-slate-300 leading-relaxed">{data.summary}</p>
+                          </div>
+                          
+                          <div>
+                            <h3 className="text-sm font-semibold text-blue-400 uppercase tracking-wider mb-3">Strategic Recommendations</h3>
+                            <ul className="space-y-3">
+                              {data.recommendations?.map((rec: string, i: number) => (
+                                <li key={i} className="flex items-start gap-3 text-slate-300 text-sm">
+                                  <span className="text-blue-500 mt-1.5 h-1.5 w-1.5 rounded-full bg-blue-500 flex-shrink-0"></span>
+                                  <span>{rec}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      ) : (
+                        // Fallback for old reports
+                        report.content && report.content.opportunities ? (
+                          <div className="space-y-4">
+                            {report.content.opportunities.map((opp: any, idx: number) => (
+                              <div key={idx} className="p-4 bg-slate-950 rounded border border-slate-800">
+                                <h4 className="font-bold text-blue-400 mb-1">{opp.title}</h4>
+                                <p className="text-sm text-slate-300">{opp.description}</p>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <pre className="bg-slate-950 p-4 rounded-lg overflow-auto text-sm text-slate-300 font-mono whitespace-pre-wrap max-h-96">
+                            {JSON.stringify(report.content, null, 2)}
+                          </pre>
+                        )
+                      )}
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
           )}
         </div>
