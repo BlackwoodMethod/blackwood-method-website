@@ -5,7 +5,6 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
@@ -27,24 +26,20 @@ jobs:
         with:
           node-version: "20"
           cache: 'npm'
-          cache-dependency-path: 'client/package-lock.json'
+          cache-dependency-path: 'package-lock.json'
 
       - name: Install Dependencies
-        run: |
-          cd client
-          npm ci
+        run: npm install
 
       - name: Build
-        run: |
-          cd client
-          npm run build
+        run: npm run build
         env:
           VITE_APP_TITLE: "Blackwood Method"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./client/dist
+          path: ./dist
 
   deploy:
     environment:
