@@ -261,8 +261,8 @@ export default function Home() {
               }
             ].map((tab) => (
               <TabsContent key={tab.id} value={tab.id} className="mt-0">
-                <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-2xl">
-                  <div className="bg-slate-800/50 p-4 border-b border-slate-800 flex justify-between items-center">
+                <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-800/50 rounded-xl overflow-hidden shadow-2xl hover:shadow-blue-900/20 transition-all duration-500 group">
+                  <div className="bg-slate-800/40 p-4 border-b border-slate-800/50 flex justify-between items-center">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-white">
                         {tab.title.charAt(0)}
@@ -274,7 +274,7 @@ export default function Home() {
                   <div className="p-8">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                       {tab.metrics.map((metric, i) => (
-                        <div key={i} className="bg-black/40 p-4 rounded-lg border border-slate-800">
+                        <div key={i} className="bg-black/20 p-4 rounded-lg border border-slate-800/50 hover:bg-blue-900/10 transition-colors duration-300">
                           <div className="text-slate-400 text-sm mb-1">{metric.label}</div>
                           <div className="flex items-end gap-2">
                             <div className="text-2xl font-bold text-white">{metric.value}</div>
@@ -285,7 +285,7 @@ export default function Home() {
                         </div>
                       ))}
                     </div>
-                    <div className="bg-blue-900/10 border border-blue-900/30 p-6 rounded-lg">
+                    <div className="bg-gradient-to-r from-blue-900/20 to-purple-900/20 border border-blue-500/20 p-6 rounded-lg backdrop-blur-sm">
                       <div className="flex items-start gap-3">
                         <Zap className="w-5 h-5 text-blue-400 mt-1 shrink-0" />
                         <div>
