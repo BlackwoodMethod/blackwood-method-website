@@ -41,6 +41,11 @@ export default function Navigation() {
                 </span>
               </Link>
             ))}
+            <Link href="/signin">
+              <Button variant="ghost" size="sm" className="text-gray-700 hover:text-blue-700 hover:bg-blue-50">
+                Sign In
+              </Button>
+            </Link>
             <Link href="/contact">
               <Button size="sm" className="bg-blue-700 hover:bg-blue-800">
                 Get Started
@@ -76,6 +81,16 @@ export default function Navigation() {
                   </span>
                 </Link>
               ))}
+              <Link href="/signin">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-full text-gray-700 hover:text-blue-700 hover:bg-blue-50 mb-2"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Sign In
+                </Button>
+              </Link>
               <Link href="/contact">
                 <Button
                   size="sm"

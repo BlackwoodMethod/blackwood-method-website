@@ -18,7 +18,7 @@ serve(async (req) => {
       throw new Error('GEMINI_API_KEY is not set')
     }
 
-    const model = 'gemini-1.5-flash';
+    const model = 'gemini-2.0-flash';
     
     // Updated Prompt for "AI Readiness Score" format
     const prompt = `You are a senior marketing strategist for Blackwood Method. Your job is to analyze agency websites and identify key opportunities for automation or AI implementation.
