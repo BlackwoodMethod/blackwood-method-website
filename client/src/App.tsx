@@ -11,6 +11,7 @@ import Contact from "./pages/Contact";
 import Demo from "./pages/Demo";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import Settings from "./pages/Settings";
 import ClientDetails from "./pages/ClientDetails";
 
 function Router() {
@@ -24,6 +25,7 @@ function Router() {
       <Route path="/login" component={Login} />
       <Route path="/signin" component={Login} />
       <Route path="/dashboard" component={Dashboard} />
+      <Route path="/dashboard/settings" component={Settings} />
       <Route path="/client/:id" component={ClientDetails} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
